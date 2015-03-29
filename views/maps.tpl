@@ -2,79 +2,61 @@
 <html>
   <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <style type="text/css">
-      html, body, #map-canvas { height: 100%; margin: 0; padding: 0;}
+     <style >
+      body {
+        margin: 0;
+        padding: 10px 20px 20px;
+        font-family: Arial;
+        font-size: 16px;
+      }
+      #map-container {
+        padding: 6px;
+        border-width: 1px;
+        border-style: solid;
+        border-color: #ccc #ccc #999 #ccc;
+        -webkit-box-shadow: rgba(64, 64, 64, 0.5) 0 2px 5px;
+        -moz-box-shadow: rgba(64, 64, 64, 0.5) 0 2px 5px;
+        box-shadow: rgba(64, 64, 64, 0.1) 0 2px 5px;
+        width: 600px;
+      }
+      #map {
+        width: 600px;
+        height: 400px;
+      }
     </style>
     <script type="text/javascript"
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDJPIZ6eYnHvslQk8FAVf3ea1eaAbVJqkw">
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAK7HUxhdyCn0RlDf__mAtydksjzZQpoSg">
     </script>
    <script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/tags/markerclusterer/1.0/src/markerclusterer.js"></script>
     <script type="text/javascript">
-      var map, mc;
-      
-       function refreshMap() {
-        if (markerClusterer) {
-            markerClusterer.clearMarkers();
-        }
+      function initialize() {
+        var center = new google.maps.LatLng(37.4419, -122.1419);
+
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 3,
+          center: center,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        });
 
         var markers = [];
-
-        var markerImage = new google.maps.MarkerImage(imageUrl, new google.maps.Size(24, 32));
-
-        for (var i = 0; i < 1000; ++i) {
-            var latLng = new google.maps.LatLng(data.photos[i].latitude, data.photos[i].longitude)
-            var marker = new google.maps.Marker({
-                position: latLng,
-                draggable: true,
-                icon: markerImage
-            });
-            google.maps.event.addListener(marker, 'click', function() {
-                var infowindow = new google.maps.InfoWindow({
-                    content: 'Information!'
-                });
-                infowindow.open(map, this);
-            });
-            markers.push(marker);
-        }
-
-        var zoom = parseInt(document.getElementById('zoom').value, 10);
-        var size = parseInt(document.getElementById('size').value, 10);
-        var style = parseInt(document.getElementById('style').value, 10);
-        zoom = zoom == -1 ? null : zoom;
-        size = size == -1 ? null : size;
-        style = style == -1 ? null : style;
-
-        markerClusterer = new MarkerClusterer(map, markers, {
-            maxZoom: zoom,
-            gridSize: size,
-            styles: styles[style]
-        });
-    }
-
-      
-       function initialize() {
-        map = new google.maps.Map(document.getElementById('map'), {
-            zoom: 2,
-            center: new google.maps.LatLng(39.91, 116.38),
-            mapTypeId: google.maps.MapTypeId.ROADMAP
-        });
-
-        var refresh = document.getElementById('refresh');
-        google.maps.event.addDomListener(refresh, 'click', refreshMap);
-
-        var clear = document.getElementById('clear');
-        google.maps.event.addDomListener(clear, 'click', clearClusters);
-
-        refreshMap();
+        var data = {{ .Coordinate }};
+        console.log(data);
+        for(var i = 0; i < data.length; i++){    
+          var latLng = new google.maps.LatLng(data[i].latitude, data[i].longitude);
+          var marker = new google.maps.Marker({
+            position: latLng
+          });
+          markers.push(marker);
+       }
+       
+        var markerCluster = new MarkerClusterer(map, markers);
+        
+        
       }
-     
-
-
       google.maps.event.addDomListener(window, 'load', initialize);
     </script>
   </head>
   <body>
-
-<div id="map-canvas"></div>
+<div id="map-container"><div id="map"></div></div>
   </body>
 </html>

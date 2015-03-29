@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"github.com/astaxie/beego"
-  "github.com/astaxie/beego/httplib"
+//   "github.com/astaxie/beego/httplib"
   "mapcluster/models"
   "fmt"
   "encoding/json"
@@ -19,21 +19,14 @@ func (c *MainController) Get() {
 }
 
 func (c *MainController) Maps() {
-  var response models.Response
-  
-  reqUrl := "http://gmaps-utility-library-dev.googlecode.com/svn/tags/markerclusterer/1.0/examples/data.json"
-  req := httplib.Get(reqUrl)
-  result, err := req.Bytes()
-  if err != nil {
-		fmt.Println(err)
-	} else {
-    fmt.Println(result)
-  }
-  if err := json.Unmarshal(result, &response); err != nil {
+  var response []models.Coordinate
+  var coordinates =  "[{ \"latitude\" : 37.4419, \"longitude\" : -122.1419},{ \"latitude\" : 7.4419, \"longitude\" : 122.1419},{ \"latitude\" : 37.4219, \"longitude\" : -122.1219},{ \"latitude\" : 37.119, \"longitude\" : -122.1419},{ \"latitude\" : 37.4019, \"longitude\" : -122.1419},{ \"latitude\" : 37.4490, \"longitude\" : -122.1419}]";
+  if err := json.Unmarshal([]byte(coordinates), &response); err != nil {
     fmt.Println(err)
   }
   fmt.Println("Response")
   fmt.Println(response)
+  c.Data["Coordinate"] = response
   c.TplNames = "maps.tpl" 
 }
 
